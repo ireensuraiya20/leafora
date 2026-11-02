@@ -68,6 +68,41 @@ create table if not exists public.orders (
 );
 create index if not exists orders_created_at_idx on public.orders (created_at desc);
 
+-- Seed only IDs, names, and prices for first-time setups. Site content loading
+-- merges these with the built-in default copy; existing CMS data is never overwritten.
+insert into public.site_content (id, data, updated_at)
+values (
+  'main',
+  jsonb_build_object('products', '[
+    {"id":"money-plant","name":"Money plant","price":250},
+    {"id":"snake-plant","name":"Snake plant","price":450},
+    {"id":"peace-lily","name":"Peace lily","price":500},
+    {"id":"monstera","name":"Monstera","price":1200},
+    {"id":"boston-fern","name":"Boston fern","price":450},
+    {"id":"lucky-bamboo","name":"Lucky bamboo","price":400},
+    {"id":"spider-plant","name":"Spider plant","price":300},
+    {"id":"areca-palm","name":"Areca palm","price":900},
+    {"id":"rubber-plant","name":"Rubber plant","price":800},
+    {"id":"aloe-vera","name":"Aloe vera","price":200},
+    {"id":"jade-plant","name":"Jade plant","price":350},
+    {"id":"cactus","name":"Cactus","price":180},
+    {"id":"bonsai","name":"Ficus bonsai","price":1800},
+    {"id":"rose","name":"Potted rose","price":350},
+    {"id":"marigold","name":"Marigold","price":80},
+    {"id":"orchid","name":"Orchid","price":1500},
+    {"id":"tulsi","name":"Tulsi","price":120},
+    {"id":"mint","name":"Mint","price":100},
+    {"id":"terra-set","name":"Terracotta pot set","price":350},
+    {"id":"ceramic-pot","name":"Ceramic pot","price":450},
+    {"id":"terrarium","name":"Glass terrarium","price":1100},
+    {"id":"soil","name":"Potting mix","price":150},
+    {"id":"fertilizer","name":"Plant fertilizer","price":220},
+    {"id":"can","name":"Watering can","price":380}
+  ]'::jsonb),
+  now()
+)
+on conflict (id) do nothing;
+
 alter table public.orders enable row level security;
 revoke all on public.orders from anon, authenticated;
 grant select, update on public.orders to authenticated;
@@ -223,6 +258,7 @@ set data = pg_catalog.jsonb_set(data, '{order,labels,totalLabel}', '"Items subto
 where id = 'main';
 
 comment on column public.orders.total_amount is 'Items subtotal from server-side product prices; delivery charges are confirmed by the store separately.';
+notify pgrst, 'reload schema';
 
 -- After inviting/creating the admin account in Supabase Auth, replace the email and run:
 -- insert into public.site_admins (user_id)
