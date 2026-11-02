@@ -1,0 +1,89 @@
+(function () {
+  'use strict';
+  var defaults = {
+    brandName: 'Leafora', brandAlt:'Leafora logo: a plant growing from a shopping bag inside a green ring. Plants, online and physical store.', footerTagline: 'Leafora | Plants, online & physical store',
+    nav: { ariaLabel:'Main navigation', plants:'Plants', why:'Why Leafora', blog:'Blog', visit:'Visit', shopNow:'Shop now' },
+    hero: { eyebrow:'Plants | Online & physical store', title:'Plants that settle in and keep growing.', description:'Leafora is a plant shop you can visit or order from online. Every plant comes healthy, with simple care notes so it does well in your home.', primaryLabel:'Shop plants', secondaryLabel:'Visit the store' },
+    shop: { title:'Plants, pots and care', description:'Prices are in taka. Add what you want and send us the order.', filterLabel:'Filter plants' },
+    filters: [
+      { id:'all', label:'All' }, { id:'low', label:'Low light' }, { id:'bright', label:'Bright light' },
+      { id:'flower', label:'Flowering' }, { id:'herb', label:'Herbs' }, { id:'care', label:'Pots & care' }
+    ],
+    tagLabels: { low:'Low light', bright:'Bright light', herb:'Herb', flower:'Flowering', care:'Pots & care' },
+    why: { title:'Healthy plants, easy to look after', description:'We keep the shop small so each plant gets looked at before it goes home with you.', items:[
+      { title:'Checked before they leave', text:'Every plant is looked over for yellow leaves, pests and loose soil before it is handed over or packed.' },
+      { title:'A care card with each plant', text:'You get its light, water and repotting needs on one card, so you are not guessing in week two.' },
+      { title:'Online or in the store', text:'Choose your plants here and send the order, or come in and pick them by hand. Pickup and local delivery both work.' }
+    ] },
+    store: { title:'Visit the store', description:'Come and see the plants in person.', address:'Your shop address, Bogura', hours:'Daily, 9:00 am to 8:00 pm', phone:'+880 1XXX-XXXXXX', whatsapp:'', facebook:'facebook.com/your-page', labels:{ address:'Address', hours:'Hours', phone:'Phone', facebook:'Facebook' } },
+    order: { title:'Order online', description:'It takes a minute.', steps:[
+      'Add plants to your order in the list above.',
+      'Press Copy order. Your plants and the total are copied as a message.',
+      'Paste it into Messenger or WhatsApp and send it to us.',
+      'We confirm stock, the delivery charge and a pickup time.'
+    ], labels:{ addButton:'Add', removeButton:'Remove one', increaseButton:'Add one', quantityLabel:'Quantity of', fallbackLabel:'Your order message', copyButton:'Copy order', whatsappButton:'Send on WhatsApp', singular:'plant', plural:'plants', messageIntro:'Hello {shopName}, I would like to order:', totalLabel:'Total', copySuccess:'Order copied. Paste it in Messenger or WhatsApp.', copyFallback:'Copy this message and send it to us.' } },
+    products: [
+      {id:'money-plant',name:'Money plant',bn:'মানি প্লান্ট',kind:'hanging',tags:['low'],rows:[['Light','Low to medium light'],['Water','When the top soil feels dry']],price:250,imageUrl:''},
+      {id:'snake-plant',name:'Snake plant',bn:'স্নেক প্লান্ট',kind:'snake',tags:['low','bright'],rows:[['Light','Low to bright light'],['Water','Every 2 to 3 weeks']],price:450,imageUrl:''},
+      {id:'peace-lily',name:'Peace lily',bn:'পিস লিলি',kind:'leafy',tags:['low'],rows:[['Light','Shade to medium light'],['Water','Weekly. Leaves droop when thirsty']],price:500,imageUrl:''},
+      {id:'monstera',name:'Monstera',bn:'মনস্টেরা',kind:'monstera',tags:['bright'],rows:[['Light','Bright, indirect light'],['Water','Weekly. Let the top inch dry']],price:1200,imageUrl:''},
+      {id:'boston-fern',name:'Boston fern',bn:'বস্টন ফার্ন',kind:'fern',tags:['low'],rows:[['Light','Shade to medium light'],['Water','Keep soil lightly moist']],price:450,imageUrl:''},
+      {id:'lucky-bamboo',name:'Lucky bamboo',bn:'লাকি বাম্বু',kind:'bamboo',tags:['low'],rows:[['Light','Low to medium light'],['Water','Change the vase water weekly']],price:400,imageUrl:''},
+      {id:'spider-plant',name:'Spider plant',bn:'স্পাইডার প্লান্ট',kind:'grass',tags:['low','bright'],rows:[['Light','Medium, indirect light'],['Water','Weekly. Forgives a missed week']],price:300,imageUrl:''},
+      {id:'areca-palm',name:'Areca palm',bn:'এরেকা পাম',kind:'palm',tags:['bright'],rows:[['Light','Bright, indirect light'],['Water','Weekly. Keep soil lightly moist']],price:900,imageUrl:''},
+      {id:'rubber-plant',name:'Rubber plant',bn:'রাবার প্লান্ট',kind:'rubber',tags:['bright'],rows:[['Light','Bright, indirect light'],['Water','Every 1 to 2 weeks']],price:800,imageUrl:''},
+      {id:'aloe-vera',name:'Aloe vera',bn:'ঘৃতকুমারী',kind:'aloe',tags:['bright'],rows:[['Light','Bright light, some direct sun'],['Water','Every 2 weeks. Let soil dry between']],price:200,imageUrl:''},
+      {id:'jade-plant',name:'Jade plant',bn:'জেড প্লান্ট',kind:'round',tags:['bright'],rows:[['Light','Bright light'],['Water','Every 2 to 3 weeks']],price:350,imageUrl:''},
+      {id:'cactus',name:'Cactus',bn:'ক্যাকটাস',kind:'cactus',tags:['bright'],rows:[['Light','Full sun'],['Water','Every 3 weeks. Less in winter']],price:180,imageUrl:''},
+      {id:'bonsai',name:'Ficus bonsai',bn:'বনসাই',kind:'bonsai',tags:['bright'],rows:[['Light','Bright, indirect light'],['Water','When the soil surface dries']],price:1800,imageUrl:''},
+      {id:'rose',name:'Potted rose',bn:'গোলাপ',kind:'rose',tags:['bright','flower'],rows:[['Light','Full sun, 5 to 6 hours'],['Water','Every 2 days in summer']],price:350,imageUrl:''},
+      {id:'marigold',name:'Marigold',bn:'গাঁদা',kind:'marigold',tags:['bright','flower'],rows:[['Light','Full sun'],['Water','Every 2 days. Do not wet the flowers']],price:80,imageUrl:''},
+      {id:'orchid',name:'Orchid',bn:'অর্কিড',kind:'orchid',tags:['bright','flower'],rows:[['Light','Bright, indirect light'],['Water','Once a week, drain well']],price:1500,imageUrl:''},
+      {id:'tulsi',name:'Tulsi',bn:'তুলসী',kind:'herb',tags:['bright','herb'],rows:[['Light','Full sun, 5 to 6 hours'],['Water','A little each day. Never soggy']],price:120,imageUrl:''},
+      {id:'mint',name:'Mint',bn:'পুদিনা',kind:'herb',tags:['bright','herb'],rows:[['Light','Morning sun'],['Water','Keep soil moist']],price:100,imageUrl:''},
+      {id:'terra-set',name:'Terracotta pot set',bn:'টেরাকোটা টব সেট',kind:'terra',tags:['care'],rows:[['Set','3 pots: 4, 5 and 6 inch'],['Good for','Succulents and herbs']],price:350,imageUrl:''},
+      {id:'ceramic-pot',name:'Ceramic pot',bn:'সিরামিক টব',kind:'ceramic',tags:['care'],rows:[['Size','6 inch, glazed'],['Comes with','Drainage hole and saucer']],price:450,imageUrl:''},
+      {id:'terrarium',name:'Glass terrarium',bn:'টেরারিয়াম',kind:'terrarium',tags:['care'],rows:[['Size','20 cm glass jar'],['Includes','Pebbles, soil and a mini plant']],price:1100,imageUrl:''},
+      {id:'soil',name:'Potting mix',bn:'পটিং মিক্স',kind:'soil',tags:['care'],rows:[['Pack','2 kg'],['Mix','Soil, cocopeat and compost']],price:150,imageUrl:''},
+      {id:'fertilizer',name:'Plant fertilizer',bn:'গাছের সার',kind:'fert',tags:['care'],rows:[['Pack','500 ml liquid'],['Use','Once every 2 weeks']],price:220,imageUrl:''},
+      {id:'can',name:'Watering can',bn:'ওয়াটারিং ক্যান',kind:'can',tags:['care'],rows:[['Size','1.5 litre'],['Spout','Long, narrow neck']],price:380,imageUrl:''}
+    ],
+    blog: { eyebrow:'The Leafora journal', title:'Growing, together.', intro:'Plant care notes, growing tips and stories from Leafora will live here.', emptyMessage:'Our first post is on its way. Check back soon.', posts:[] }
+  };
+
+  function clone(value) { return JSON.parse(JSON.stringify(value)); }
+  function merge(base, incoming) {
+    if (!incoming || typeof incoming !== 'object' || Array.isArray(incoming)) return incoming === undefined ? clone(base) : incoming;
+    var result = Object.assign({}, base || {});
+    Object.keys(incoming).forEach(function (key) {
+      result[key] = incoming[key] && typeof incoming[key] === 'object' && !Array.isArray(incoming[key])
+        ? merge(result[key], incoming[key]) : incoming[key];
+    });
+    return result;
+  }
+
+  var config = window.LEAFORA_SUPABASE_CONFIG || {};
+  var configured = /^https:\/\/.+\.supabase\.co$/.test(config.url || '') && /^(sb_publishable_|eyJ)/.test(config.publishableKey || '');
+  var client = configured && window.supabase && window.supabase.createClient ? window.supabase.createClient(config.url, config.publishableKey) : null;
+  window.LEAFORA_DEFAULT_CONTENT = defaults;
+  window.LEAFORA = {
+    client: client, configured: !!client, defaults: defaults, clone: clone,
+    loadContent: async function () {
+      if (!client) return clone(defaults);
+      var result = await client.from('site_content').select('data').eq('id','main').maybeSingle();
+      if (result.error) throw result.error;
+      return result.data ? merge(clone(defaults), result.data.data) : clone(defaults);
+    },
+    saveContent: async function (data, userId) {
+      if (!client) throw new Error('Supabase is not configured yet.');
+      var result = await client.from('site_content').upsert({id:'main',data:data,updated_at:new Date().toISOString(),updated_by:userId},{onConflict:'id'});
+      if (result.error) throw result.error;
+    },
+    isAdmin: async function () {
+      if (!client) return false;
+      var result = await client.rpc('is_site_admin');
+      if (result.error) throw result.error;
+      return result.data === true;
+    }
+  };
+})();

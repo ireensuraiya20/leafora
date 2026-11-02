@@ -26,6 +26,14 @@
     h1 { margin:0 0 16px; color:var(--accent); font:700 clamp(2.5rem,7vw,4.5rem)/1.05 var(--display); letter-spacing:-.03em; }
     .intro { max-width:54ch; color:var(--muted); }
     .empty { margin-top:36px; padding:22px 24px; background:var(--sage); border-radius:14px; }
+    #blog-content { display:grid; gap:22px; margin-top:36px; }
+    .post { overflow:hidden; border:1px solid var(--line); border-radius:16px; background:#fffdf7; }
+    .post-image { display:block; width:100%; max-height:420px; object-fit:cover; }
+    .post-copy { padding:clamp(20px,4vw,36px); }
+    .post-copy h2 { margin:8px 0 12px; color:var(--accent); font:700 clamp(1.6rem,4vw,2.25rem)/1.15 var(--display); }
+    .post-copy time { color:var(--muted); font-size:.78rem; }
+    .post-excerpt { color:var(--muted); }
+    .post-body { margin-top:20px; white-space:normal; }
     .empty p { margin:0; }
     footer { padding-block:24px; background:var(--forest); color:#F0E7D3; font-size:.85rem; }
     footer .wrap { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
@@ -36,25 +44,26 @@
   <header class="site">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="Leafora home">Leafora</a>
-      <nav class="links" aria-label="Main navigation">
-        <a class="nav-link" href="index.html#shop">Plants</a>
-        <a class="nav-link" href="index.html#why">Why Leafora</a>
-        <a class="nav-link" href="blog.html" aria-current="page">Blog</a>
-        <a class="nav-link" href="index.html#visit">Visit</a>
+      <nav class="links" aria-label="Main navigation" data-cms-aria="nav.ariaLabel">
+        <a class="nav-link" href="index.html#shop" data-cms="nav.plants">Plants</a>
+        <a class="nav-link" href="index.html#why" data-cms="nav.why">Why Leafora</a>
+        <a class="nav-link" href="blog.html" aria-current="page" data-cms="nav.blog">Blog</a>
+        <a class="nav-link" href="index.html#visit" data-cms="nav.visit">Visit</a>
       </nav>
     </div>
   </header>
   <main>
     <div class="wrap">
       <section class="journal" aria-labelledby="journal-title">
-        <p class="eyebrow">The Leafora journal</p>
-        <h1 id="journal-title">Growing, together.</h1>
-        <p class="intro">Plant care notes, growing tips and stories from Leafora will live here.</p>
-        <div class="empty" role="status"><p>Our first post is on its way. Check back soon.</p></div>
+        <p class="eyebrow" data-cms="blog.eyebrow">The Leafora journal</p>
+        <h1 id="journal-title" data-cms="blog.title">Growing, together.</h1>
+        <p class="intro" data-cms="blog.intro">Plant care notes, growing tips and stories from Leafora will live here.</p>
+        <div id="blog-content"></div>
       </section>
     </div>
   </main>
   <footer><div class="wrap"><span>Leafora | Plants, online &amp; physical store</span><span>© <span id="year"></span> Leafora</span></div></footer>
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script><script src="site-content.js"></script><script src="blog.js"></script>
 </body>
 </html>
