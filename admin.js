@@ -32,7 +32,7 @@
   }
   function emptyItem(path) {
     var key = path.split('.').pop();
-    if (key === 'products') return {id:'new-item',name:'New plant',bn:'',kind:'leafy',tags:['bright'],rows:[['Light',''],['Water','']],price:0,imageUrl:''};
+    if (key === 'products') return {id:'new-item',name:'New plant',bn:'',kind:'leafy',tags:['bright'],rows:[['Light',''],['Water','']],usefulness:'',price:0,imageUrl:''};
     if (key === 'posts') return {slug:'new-post',title:'New post',excerpt:'',body:'',coverImage:'',publishedAt:'',published:false};
     if (key === 'items') return {title:'',text:''};
     if (key === 'filters') return {id:'new-filter',label:''};
@@ -51,7 +51,7 @@
     return (index + 1) + (label ? ' · ' + label : '');
   }
   function fieldMarkup(key, value, path, inArray) {
-    var label = pretty(key), full = /description|intro|excerpt|body|text|message|steps/i.test(key);
+    var label = pretty(key), full = /description|intro|excerpt|body|text|message|steps|usefulness/i.test(key);
     if (Array.isArray(value)) {
       var rows = value.map(function (item, index) {
         var complex = item !== null && typeof item === 'object';
@@ -71,7 +71,7 @@
     var label = pretty(key), type = typeof value;
     if (type === 'boolean') return '<label class="field' + (inArray ? '' : ' full') + '"><span>' + escapeHtml(label) + '</span><input type="checkbox" data-path="' + escapeHtml(path) + '" data-kind="boolean" ' + (value ? 'checked' : '') + '></label>';
     var number = type === 'number';
-    var multiline = forceFull || /description|intro|excerpt|body|text|message/i.test(key);
+    var multiline = forceFull || /description|intro|excerpt|body|text|message|usefulness/i.test(key);
     var control = multiline
       ? '<textarea data-path="' + escapeHtml(path) + '" data-kind="' + (number ? 'number' : 'string') + '">' + escapeHtml(value) + '</textarea>'
       : '<input type="' + (number ? 'number' : 'text') + '" data-path="' + escapeHtml(path) + '" data-kind="' + (number ? 'number' : 'string') + '" value="' + escapeHtml(value) + '">';
