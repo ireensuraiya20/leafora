@@ -57,8 +57,15 @@
     if (!incoming || typeof incoming !== 'object' || Array.isArray(incoming)) return incoming === undefined ? clone(base) : incoming;
     var result = Object.assign({}, base || {});
     Object.keys(incoming).forEach(function (key) {
-      result[key] = incoming[key] && typeof incoming[key] === 'object' && !Array.isArray(incoming[key])
-        ? merge(result[key], incoming[key]) : incoming[key];
+      if (key === 'products' && Array.isArray(incoming[key]) && Array.isArray(result[key])) {
+        result[key] = incoming[key].map(function (product) {
+          var saved = result[key].filter(function (item) { return item && item.id === product.id; })[0] || {};
+          return merge(saved, product);
+        });
+      } else {
+        result[key] = incoming[key] && typeof incoming[key] === 'object' && !Array.isArray(incoming[key])
+          ? merge(result[key], incoming[key]) : incoming[key];
+      }
     });
     return result;
   }
