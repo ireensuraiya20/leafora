@@ -5,7 +5,7 @@
     nav: { ariaLabel:'Main navigation', plants:'Plants', why:'Why Leafora', blog:'Blog', visit:'Visit', shopNow:'Shop now' },
     hero: { eyebrow:'Plants | Online & physical store', title:'Plants that settle in and keep growing.', description:'Leafora is a plant shop you can visit or order from online. Every plant comes healthy, with simple care notes so it does well in your home.', primaryLabel:'Shop plants', secondaryLabel:'Visit the store' },
     shop: { title:'Plants, pots and care', description:'Prices are in taka. Add what you want and send us the order.', filterLabel:'Filter plants' },
-    productDetails: { detailsButton:'View details', usefulnessLabel:'Good to know', careLabel:'Care guide', closeButton:'Close details', addToOrder:'Add to order', dialogLabel:'Product details' },
+    productDetails: { detailsButton:'View details', usefulnessLabel:'Good to know', careLabel:'Care guide', closeButton:'Close details', addToOrder:'Add to cart', dialogLabel:'Product details' },
     filters: [
       { id:'all', label:'All' }, { id:'low', label:'Low light' }, { id:'bright', label:'Bright light' },
       { id:'flower', label:'Flowering' }, { id:'herb', label:'Herbs' }, { id:'care', label:'Pots & care' }
@@ -18,11 +18,11 @@
     ] },
     store: { title:'Visit the store', description:'Come and see the plants in person.', address:'Your shop address, Bogura', hours:'Daily, 9:00 am to 8:00 pm', phone:'+880 1XXX-XXXXXX', whatsapp:'', facebook:'facebook.com/your-page', labels:{ address:'Address', hours:'Hours', phone:'Phone', facebook:'Facebook' } },
     order: { title:'Order online', description:'It takes a minute.', steps:[
-      'Add plants to your order in the list above.',
-      'Press Copy order. Your plants and the total are copied as a message.',
+      'Add plants to your cart using the Add to cart buttons.',
+      'Open your cart to review quantities and the total, then copy the order or send it on WhatsApp.',
       'Paste it into Messenger or WhatsApp and send it to us.',
       'We confirm stock, the delivery charge and a pickup time.'
-    ], labels:{ addButton:'Add', removeButton:'Remove one', increaseButton:'Add one', quantityLabel:'Quantity of', fallbackLabel:'Your order message', copyButton:'Copy order', whatsappButton:'Send on WhatsApp', singular:'plant', plural:'plants', messageIntro:'Hello {shopName}, I would like to order:', totalLabel:'Total', copySuccess:'Order copied. Paste it in Messenger or WhatsApp.', copyFallback:'Copy this message and send it to us.' } },
+    ], labels:{ addButton:'Add', cartButton:'Add to cart', viewCartButton:'View cart', cartTitle:'Your cart', emptyCart:'Your cart is empty.', continueShopping:'Continue shopping', removeButton:'Remove one', increaseButton:'Add one', quantityLabel:'Quantity of', fallbackLabel:'Your order message', copyButton:'Copy order', whatsappButton:'Send on WhatsApp', singular:'plant', plural:'plants', messageIntro:'Hello {shopName}, I would like to order:', totalLabel:'Total', copySuccess:'Order copied. Paste it in Messenger or WhatsApp.', copyFallback:'Copy this message and send it to us.' } },
     products: [
       {id:'money-plant',name:'Money plant',bn:'মানি প্লান্ট',kind:'hanging',tags:['low'],rows:[['Light','Low to medium light'],['Water','When the top soil feels dry']],usefulness:'Trailing stems soften shelves and hanging corners, making it an easy way to add greenery in a small space.',price:250,imageUrl:''},
       {id:'snake-plant',name:'Snake plant',bn:'স্নেক প্লান্ট',kind:'snake',tags:['low','bright'],rows:[['Light','Low to bright light'],['Water','Every 2 to 3 weeks']],usefulness:'Its upright leaves add height while taking up little floor space. A good pick if you prefer a simple watering routine.',price:450,imageUrl:''},

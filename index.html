@@ -197,6 +197,25 @@ h1 {
 .product-detail-buy { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
 .product-dialog-close { position: sticky; top: 12px; float: right; z-index: 1; margin: 12px 12px -52px 0; width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 50%; background: var(--surface); color: var(--ink); font-size: 1.5rem; cursor: pointer; }
 @media (max-width: 600px) { .product-detail { grid-template-columns: minmax(0, 1fr); } .product-detail-visual { min-height: 250px; max-height: 320px; } }
+.cart-dialog { width: min(680px, calc(100% - 24px)); max-width: none; max-height: min(88vh, 900px); padding: 0; overflow: auto; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); color: var(--ink); box-shadow: 0 24px 80px rgb(20 40 25 / .28); }
+.cart-dialog::backdrop { background: rgb(10 24 15 / .58); backdrop-filter: blur(3px); }
+.cart-shell { padding: clamp(24px, 5vw, 40px); }
+.cart-shell h2 { margin: 0 52px 22px 0; color: var(--accent); font: 700 clamp(1.8rem, 4vw, 2.5rem)/1.08 var(--font-display); }
+.cart-items { display: grid; gap: 14px; }
+.cart-line { display: grid; grid-template-columns: 76px minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 12px 0; border-top: 1px solid var(--line); }
+.cart-item-image { width: 76px; height: 82px; overflow: hidden; border-radius: 10px; background: var(--surface-2); }
+.cart-item-image img, .cart-item-image svg { display: block; width: 100%; height: 100%; object-fit: cover; }
+.cart-line h3 { margin: 0 0 4px; font-size: 1rem; }
+.cart-line p { margin: 0; color: var(--muted); font-size: .85rem; }
+.cart-line-end { display: grid; justify-items: end; gap: 9px; }
+.cart-remove { padding: 0; border: 0; background: transparent; color: var(--muted); font: inherit; font-size: .78rem; text-decoration: underline; cursor: pointer; }
+.cart-total-row { display: flex; justify-content: space-between; gap: 16px; margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); font-weight: 700; }
+.cart-footer { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 18px; }
+.cart-footer .cart-total-row { flex-basis: 100%; }
+.cart-status { flex-basis: 100%; margin: 0; color: var(--accent); font-size: .85rem; }
+.cart-empty { margin: 0; padding: 22px; border-radius: 12px; background: var(--surface-2); color: var(--muted); }
+.cart-shell textarea { width: 100%; min-height: 110px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); color: var(--ink); font: inherit; font-size: .85rem; resize: vertical; }
+@media (max-width: 480px) { .cart-line { grid-template-columns: 60px minmax(0, 1fr); } .cart-item-image { width: 60px; height: 68px; } .cart-line-end { grid-column: 2; grid-template-columns: auto auto; justify-items: start; align-items: center; } }
 .thumb { position: relative; overflow: hidden; aspect-ratio: 1 / 1.05; display: grid; place-items: center; background: var(--surface-2); }
 .thumb svg { height: 88%; width: auto; max-width: 100%; }
 .thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; display: block; }
@@ -350,6 +369,22 @@ h1 {
   <div id="product-detail"></div>
 </dialog>
 
+<dialog class="cart-dialog" id="cart-dialog" aria-labelledby="cart-title">
+  <button class="product-dialog-close" type="button" id="cart-close" aria-label="Close cart">×</button>
+  <div class="cart-shell">
+    <h2 id="cart-title">Your cart</h2>
+    <div class="cart-items" id="cart-items"></div>
+    <div class="cart-footer" id="cart-footer">
+      <div class="cart-total-row"><span id="cart-total-label">Total</span><span id="cart-total"></span></div>
+      <p class="cart-status" id="cart-status" role="status" aria-live="polite"></p>
+      <textarea id="cart-fallback" readonly hidden aria-label="Your cart order message"></textarea>
+      <button class="btn small" type="button" id="cart-copy">Copy order</button>
+      <a class="btn ghost small" id="cart-wa" target="_blank" rel="noopener" hidden>Send on WhatsApp</a>
+      <button class="btn ghost small" type="button" id="cart-continue">Continue shopping</button>
+    </div>
+  </div>
+</dialog>
+
 <footer class="foot">
   <div class="wrap">
     <span data-cms="footerTagline">Leafora | Plants, online &amp; physical store</span>
@@ -366,6 +401,7 @@ h1 {
         <span id="status" aria-live="polite"></span>
       </div>
       <div class="bar-actions">
+        <button class="btn ghost small" type="button" id="view-cart">View cart</button>
         <a class="btn ghost small" id="wa" target="_blank" rel="noopener" hidden>Send on WhatsApp</a>
         <button class="btn small" type="button" id="copy">Copy order</button>
       </div>
@@ -501,6 +537,11 @@ h1 {
     $('#info').innerHTML = contactRows.map(function (row) { return '<dt>' + escapeHTML(row[0]) + '</dt><dd>' + row[1] + '</dd>'; }).join('');
     $('#copy').textContent = data.order.labels.copyButton;
     $('#wa').textContent = data.order.labels.whatsappButton;
+    $('#view-cart').textContent = data.order.labels.viewCartButton || 'View cart';
+    $('#cart-copy').textContent = data.order.labels.copyButton;
+    $('#cart-wa').textContent = data.order.labels.whatsappButton;
+    $('#cart-total-label').textContent = data.order.labels.totalLabel;
+    $('#cart-continue').textContent = data.order.labels.continueShopping || 'Continue shopping';
     renderFilters();
     renderGrid();
     updateBar();
@@ -687,8 +728,9 @@ h1 {
 
   function actions(p) {
     var q = qty[p.id] || 0;
+    var cartLabel = CONTENT.order.labels.cartButton || 'Add to cart';
     if (!q) {
-      return '<button type="button" class="btn small" data-act="add" data-id="' + escapeHTML(p.id) + '" aria-label="' + escapeHTML(CONTENT.order.labels.addButton) + ' ' + escapeHTML(p.name) + '">' + escapeHTML(CONTENT.order.labels.addButton) + '</button>';
+      return '<button type="button" class="btn small" data-act="add" data-id="' + escapeHTML(p.id) + '" aria-label="' + escapeHTML(cartLabel) + ' ' + escapeHTML(p.name) + '">' + escapeHTML(cartLabel) + '</button>';
     }
     return '<div class="stepper" role="group" aria-label="Quantity of ' + p.name + '">' +
       '<button type="button" data-act="dec" data-id="' + escapeHTML(p.id) + '" aria-label="' + escapeHTML(CONTENT.order.labels.removeButton) + ' ' + escapeHTML(p.name) + '">&minus;</button>' +
@@ -720,7 +762,7 @@ h1 {
       '<div class="tags">' + tagHTML(p) + '</div></div>' +
       (usefulness ? '<p class="product-usefulness"><strong>' + escapeHTML(copy.usefulnessLabel || 'Good to know') + '</strong>' + escapeHTML(usefulness) + '</p>' : '') +
       '<div><strong>' + escapeHTML(copy.careLabel || 'Care guide') + '</strong><dl class="care">' + (p.rows || []).map(function (r) { return '<dt>' + escapeHTML(r[0]) + '</dt><dd>' + escapeHTML(r[1]) + '</dd>'; }).join('') + '</dl></div>' +
-      '<div class="product-detail-buy"><span class="price">' + money(p.price) + '</span><button type="button" class="btn small" data-detail-add="' + escapeHTML(p.id) + '">' + escapeHTML(copy.addToOrder || CONTENT.order.labels.addButton || 'Add to order') + '</button></div></div></article>';
+      '<div class="product-detail-buy"><span class="price">' + money(p.price) + '</span><button type="button" class="btn small" data-detail-add="' + escapeHTML(p.id) + '">' + escapeHTML(copy.addToOrder || CONTENT.order.labels.cartButton || 'Add to cart') + '</button></div></div></article>';
     dialog.showModal();
     $('#product-dialog-title').focus({ preventScroll: true });
   }
@@ -791,12 +833,48 @@ h1 {
     return { count: count, total: total, text: text };
   }
 
+  function renderCart() {
+    var labels = CONTENT.order.labels;
+    var selected = PRODUCTS.filter(function (p) { return (qty[p.id] || 0) > 0; });
+    var totals = order();
+    $('#cart-title').textContent = labels.cartTitle || 'Your cart';
+    $('#cart-total-label').textContent = labels.totalLabel;
+    $('#cart-copy').textContent = labels.copyButton;
+    $('#cart-wa').textContent = labels.whatsappButton;
+    $('#cart-continue').textContent = labels.continueShopping || 'Continue shopping';
+    $('#cart-status').textContent = '';
+    $('#cart-fallback').hidden = true;
+    $('#cart-items').innerHTML = selected.length ? selected.map(function (p) {
+      var quantity = qty[p.id] || 0;
+      return '<article class="cart-line" data-cart-line="' + escapeHTML(p.id) + '">' +
+        '<div class="cart-item-image">' + picture(p) + '</div>' +
+        '<div><h3>' + escapeHTML(p.name) + '</h3><p>' + money(p.price) + ' each</p></div>' +
+        '<div class="cart-line-end"><div class="stepper" role="group" aria-label="' + escapeHTML(labels.quantityLabel) + ' ' + escapeHTML(p.name) + '">' +
+        '<button type="button" data-cart-act="dec" data-id="' + escapeHTML(p.id) + '" aria-label="' + escapeHTML(labels.removeButton) + ' ' + escapeHTML(p.name) + '">&minus;</button>' +
+        '<output>' + quantity + '</output>' +
+        '<button type="button" data-cart-act="inc" data-id="' + escapeHTML(p.id) + '" aria-label="' + escapeHTML(labels.increaseButton) + ' ' + escapeHTML(p.name) + '">+</button></div>' +
+        '<strong>' + money(quantity * p.price) + '</strong>' +
+        '<button type="button" class="cart-remove" data-cart-act="remove" data-id="' + escapeHTML(p.id) + '" aria-label="' + escapeHTML(labels.removeButton) + ' ' + escapeHTML(p.name) + '">Remove</button></div></article>';
+    }).join('') : '<p class="cart-empty">' + escapeHTML(labels.emptyCart || 'Your cart is empty.') + '</p>';
+    $('#cart-total').textContent = money(totals.total);
+    $('#cart-footer').hidden = selected.length === 0;
+    var cartWhatsApp = $('#cart-wa');
+    if (SHOP.whatsapp && totals.count) {
+      cartWhatsApp.href = 'https://wa.me/' + SHOP.whatsapp + '?text=' + encodeURIComponent(totals.text);
+      cartWhatsApp.hidden = false;
+    } else {
+      cartWhatsApp.hidden = true;
+    }
+  }
+
   function updateBar() {
     var o = order();
     $('#bar').hidden = o.count === 0;
     $('#summary').textContent = o.count + ' ' + (o.count === 1 ? CONTENT.order.labels.singular : CONTENT.order.labels.plural) + ' | ' + money(o.total);
+    $('#view-cart').textContent = (CONTENT.order.labels.viewCartButton || 'View cart') + ' (' + o.count + ')';
     $('#status').textContent = '';
     $('#fallback').hidden = true;
+    renderCart();
     var wa = $('#wa');
     if (SHOP.whatsapp && o.count) {
       wa.href = 'https://wa.me/' + SHOP.whatsapp + '?text=' + encodeURIComponent(o.text);
@@ -806,9 +884,8 @@ h1 {
     }
   }
 
-  $('#copy').addEventListener('click', function () {
+  function copyOrder(status, box) {
     var text = order().text;
-    var status = $('#status'), box = $('#fallback');
     try {
       navigator.clipboard.writeText(text).then(function () {
         box.hidden = true;
@@ -824,6 +901,23 @@ h1 {
       box.select();
       status.textContent = CONTENT.order.labels.copyFallback;
     }
+  }
+  $('#copy').addEventListener('click', function () { copyOrder($('#status'), $('#fallback')); });
+  $('#cart-copy').addEventListener('click', function () { copyOrder($('#cart-status'), $('#cart-fallback')); });
+  $('#view-cart').addEventListener('click', function () {
+    renderCart();
+    $('#cart-dialog').showModal();
+  });
+  $('#cart-close').addEventListener('click', function () { $('#cart-dialog').close(); });
+  $('#cart-continue').addEventListener('click', function () { $('#cart-dialog').close(); });
+  $('#cart-dialog').addEventListener('click', function (event) {
+    if (event.target === this) this.close();
+    var button = event.target.closest('button[data-cart-act]');
+    if (!button) return;
+    var id = button.dataset.id, action = button.dataset.cartAct, quantity = qty[id] || 0;
+    qty[id] = action === 'remove' ? 0 : (action === 'dec' ? Math.max(0, quantity - 1) : Math.min(20, quantity + 1));
+    renderGrid();
+    updateBar();
   });
 
   window.LEAFORA.loadContent().then(function (content) {
