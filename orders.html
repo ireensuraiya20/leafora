@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#EFE3C9"><title>Leafora Orders</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css"><link rel="stylesheet" href="orders.css">
+</head>
+<body>
+  <header class="topbar"><a href="index.html" class="brand">Leafora <span>Order dashboard</span></a><nav><a href="admin.html" class="back">Edit website</a> &nbsp; <a href="index.html" class="back">View website ↗</a></nav></header>
+  <main class="shell">
+    <section class="panel" id="login-panel">
+      <p class="eyebrow">Private area</p><h1>Sign in to manage orders</h1>
+      <p class="muted" id="setup-note">Use your approved Leafora admin account.</p>
+      <form id="login-form" class="login-form">
+        <label>Email<input name="email" type="email" autocomplete="username" required></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+        <button class="button" type="submit">Sign in</button>
+      </form>
+      <p class="status" id="login-status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="editor" id="orders-panel" hidden>
+      <div class="editor-heading">
+        <div><p class="eyebrow">Customer orders</p><h1>Manage orders</h1><p class="muted">Only approved Leafora admins can view customer details.</p></div>
+        <div class="order-tools"><button class="button secondary" id="refresh-orders" type="button">Refresh</button><button class="button secondary" id="sign-out" type="button">Sign out</button></div>
+      </div>
+      <div class="notice" id="orders-notice" role="status" aria-live="polite">Loading orders…</div>
+      <div class="order-list" id="order-list"></div>
+    </section>
+  </main>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script><script src="site-content.js"></script><script src="orders.js"></script>
+</body>
+</html>

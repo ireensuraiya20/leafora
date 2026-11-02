@@ -216,7 +216,7 @@ h1 {
 .cart-empty { margin: 0; padding: 22px; border-radius: 12px; background: var(--surface-2); color: var(--muted); }
 .cart-shell textarea { width: 100%; min-height: 110px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); color: var(--ink); font: inherit; font-size: .85rem; resize: vertical; }
 .checkout-panel { display: grid; gap: 14px; margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line); }
-.checkout-panel[hidden], .checkout-field[hidden], #checkout-confirm[hidden] { display: none; }
+.checkout-panel[hidden], .checkout-field[hidden] { display: none; }
 .checkout-panel h3 { margin: 0; color: var(--accent); font: 700 1.35rem/1.2 var(--font-display); }
 .checkout-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .checkout-field { display: grid; gap: 6px; color: var(--ink); font-size: .86rem; font-weight: 600; }
@@ -225,6 +225,10 @@ h1 {
 .checkout-field textarea { min-height: 78px; }
 .checkout-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .checkout-ready { margin: 0; color: var(--accent); font-size: .9rem; }
+.checkout-privacy { margin:0; color:var(--muted); font-size:.78rem; }
+.checkout-success { padding: 16px; border-radius: 12px; background: var(--surface-2); color: var(--accent); }
+.checkout-success h4 { margin: 0 0 6px; font: 700 1.2rem/1.2 var(--font-display); }
+.checkout-success p { margin: 0; }
 @media (max-width: 480px) { .checkout-fields { grid-template-columns: 1fr; } .checkout-field.wide { grid-column: auto; } }
 @media (max-width: 480px) { .cart-line { grid-template-columns: 60px minmax(0, 1fr); } .cart-item-image { width: 60px; height: 68px; } .cart-line-end { grid-column: 2; grid-template-columns: auto auto; justify-items: start; align-items: center; } }
 .thumb { position: relative; overflow: hidden; aspect-ratio: 1 / 1.05; display: grid; place-items: center; background: var(--surface-2); }
@@ -388,28 +392,26 @@ h1 {
     <div class="cart-footer" id="cart-footer">
       <div class="cart-total-row"><span id="cart-total-label">Total</span><span id="cart-total"></span></div>
       <p class="cart-status" id="cart-status" role="status" aria-live="polite"></p>
-      <textarea id="cart-fallback" readonly hidden aria-label="Your cart order message"></textarea>
-      <button class="btn small" type="button" id="cart-copy">Copy order</button>
-      <a class="btn ghost small" id="cart-wa" target="_blank" rel="noopener" hidden>Send on WhatsApp</a>
-      <button class="btn small" type="button" id="checkout-open">Confirm order</button>
+      <button class="btn small" type="button" id="checkout-open">Checkout</button>
       <button class="btn ghost small" type="button" id="cart-continue">Continue shopping</button>
     </div>
     <form class="checkout-panel" id="checkout-panel" hidden>
       <h3 id="checkout-title">Contact and delivery details</h3>
       <div class="checkout-fields">
-        <label class="checkout-field"><span id="checkout-name-label">Full name</span><input name="customerName" autocomplete="name" required></label>
-        <label class="checkout-field"><span id="checkout-phone-label">Phone number</span><input name="customerPhone" type="tel" autocomplete="tel" required></label>
+        <label class="checkout-field"><span id="checkout-name-label">Full name</span><input name="customerName" autocomplete="name" minlength="2" maxlength="120" required></label>
+        <label class="checkout-field"><span id="checkout-phone-label">Phone number</span><input name="customerPhone" type="tel" autocomplete="tel" pattern="[0-9+() -]{7,25}" title="Enter a valid phone number" maxlength="25" required></label>
         <label class="checkout-field wide"><span id="checkout-method-label">Delivery method</span><select name="fulfillment" id="checkout-fulfillment"><option value="delivery">Local delivery</option><option value="pickup">Store pickup</option></select></label>
-        <label class="checkout-field wide" id="checkout-address-wrap"><span id="checkout-address-label">Delivery address</span><textarea name="address" id="checkout-address" autocomplete="street-address" required></textarea></label>
-        <label class="checkout-field wide"><span id="checkout-note-label">Order note (optional)</span><textarea name="note"></textarea></label>
+        <label class="checkout-field wide" id="checkout-address-wrap"><span id="checkout-address-label">Delivery address</span><textarea name="address" id="checkout-address" autocomplete="street-address" maxlength="500" required></textarea></label>
+        <label class="checkout-field wide"><span id="checkout-note-label">Order note (optional)</span><textarea name="note" maxlength="500"></textarea></label>
       </div>
+      <p class="checkout-privacy" id="checkout-privacy">Your details are used to process this order and are visible only to Leafora admins.</p>
       <p class="checkout-ready" id="checkout-status" role="status" aria-live="polite"></p>
       <div class="checkout-actions">
-        <button class="btn small" type="submit" id="checkout-submit">Continue to WhatsApp</button>
-        <a class="btn small" id="checkout-confirm" target="_blank" rel="noopener" hidden>Confirm order on WhatsApp</a>
+        <button class="btn small" type="submit" id="checkout-submit">Place order</button>
         <button class="btn ghost small" type="button" id="checkout-back">Back to cart</button>
       </div>
     </form>
+    <section class="checkout-success" id="checkout-success" aria-live="polite" hidden></section>
   </div>
 </dialog>
 
@@ -422,7 +424,6 @@ h1 {
 
 <div class="bar" id="bar" hidden>
   <div class="bar-inner">
-    <textarea id="fallback" readonly hidden aria-label="Your order message"></textarea>
     <div class="bar-row">
       <div class="bar-info">
         <span id="summary"></span>
@@ -430,8 +431,6 @@ h1 {
       </div>
       <div class="bar-actions">
         <button class="btn ghost small" type="button" id="view-cart">View cart</button>
-        <a class="btn ghost small" id="wa" target="_blank" rel="noopener" hidden>Send on WhatsApp</a>
-        <button class="btn small" type="button" id="copy">Copy order</button>
       </div>
     </div>
   </div>
@@ -563,15 +562,11 @@ h1 {
       [info.facebook || 'Facebook', facebook ? '<a href="' + escapeHTML(facebookHref) + '" target="_blank" rel="noopener">' + escapeHTML(facebook) + '</a>' : '']
     ];
     $('#info').innerHTML = contactRows.map(function (row) { return '<dt>' + escapeHTML(row[0]) + '</dt><dd>' + row[1] + '</dd>'; }).join('');
-    $('#copy').textContent = data.order.labels.copyButton;
-    $('#wa').textContent = data.order.labels.whatsappButton;
     $('#view-cart').textContent = data.order.labels.viewCartButton || 'View cart';
-    $('#cart-copy').textContent = data.order.labels.copyButton;
-    $('#cart-wa').textContent = data.order.labels.whatsappButton;
     $('#cart-total-label').textContent = data.order.labels.totalLabel;
     $('#cart-continue').textContent = data.order.labels.continueShopping || 'Continue shopping';
     var checkout = data.order.checkout || {};
-    $('#checkout-open').textContent = checkout.button || 'Confirm order';
+    $('#checkout-open').textContent = checkout.button || 'Checkout';
     $('#checkout-title').textContent = checkout.title || 'Contact and delivery details';
     $('#checkout-name-label').textContent = checkout.nameLabel || 'Full name';
     $('#checkout-phone-label').textContent = checkout.phoneLabel || 'Phone number';
@@ -580,8 +575,8 @@ h1 {
     $('#checkout-fulfillment option[value="pickup"]').textContent = checkout.pickupOption || 'Store pickup';
     $('#checkout-address-label').textContent = checkout.addressLabel || 'Delivery address';
     $('#checkout-note-label').textContent = checkout.noteLabel || 'Order note (optional)';
-    $('#checkout-submit').textContent = checkout.continueButton || 'Continue to WhatsApp';
-    $('#checkout-confirm').textContent = checkout.sendButton || 'Confirm order on WhatsApp';
+    $('#checkout-privacy').textContent = checkout.privacyNote || 'Your details are used to process this order and are visible only to Leafora admins.';
+    $('#checkout-submit').textContent = checkout.continueButton || 'Place order';
     $('#checkout-back').textContent = checkout.backButton || 'Back to cart';
     renderFilters();
     renderGrid();
@@ -861,17 +856,14 @@ h1 {
   });
 
   function order() {
-    var lines = [], total = 0, count = 0;
+    var total = 0, count = 0;
     PRODUCTS.forEach(function (p) {
       var q = qty[p.id] || 0;
       if (!q) return;
       count += q;
       total += q * p.price;
-      lines.push('- ' + p.name + ' x ' + q + ' (' + money(q * p.price) + ')');
     });
-    var intro = CONTENT.order.labels.messageIntro.replace('{shopName}', SHOP.name);
-    var text = intro + '\n' + lines.join('\n') + '\n' + CONTENT.order.labels.totalLabel + ': ' + money(total);
-    return { count: count, total: total, text: text };
+    return { count: count, total: total };
   }
 
   function renderCart() {
@@ -880,14 +872,11 @@ h1 {
     var totals = order();
     $('#cart-title').textContent = labels.cartTitle || 'Your cart';
     $('#cart-total-label').textContent = labels.totalLabel;
-    $('#cart-copy').textContent = labels.copyButton;
-    $('#cart-wa').textContent = labels.whatsappButton;
     $('#cart-continue').textContent = labels.continueShopping || 'Continue shopping';
     $('#cart-status').textContent = '';
-    $('#cart-fallback').hidden = true;
     $('#checkout-panel').hidden = true;
     $('#checkout-status').textContent = '';
-    $('#checkout-confirm').hidden = true;
+    $('#checkout-success').hidden = true;
     $('#cart-items').innerHTML = selected.length ? selected.map(function (p) {
       var quantity = qty[p.id] || 0;
       return '<article class="cart-line" data-cart-line="' + escapeHTML(p.id) + '">' +
@@ -902,13 +891,6 @@ h1 {
     }).join('') : '<p class="cart-empty">' + escapeHTML(labels.emptyCart || 'Your cart is empty.') + '</p>';
     $('#cart-total').textContent = money(totals.total);
     $('#cart-footer').hidden = selected.length === 0;
-    var cartWhatsApp = $('#cart-wa');
-    if (SHOP.whatsapp && totals.count) {
-      cartWhatsApp.href = 'https://wa.me/' + SHOP.whatsapp + '?text=' + encodeURIComponent(totals.text);
-      cartWhatsApp.hidden = false;
-    } else {
-      cartWhatsApp.hidden = true;
-    }
   }
 
   function updateBar() {
@@ -917,74 +899,65 @@ h1 {
     $('#summary').textContent = o.count + ' ' + (o.count === 1 ? CONTENT.order.labels.singular : CONTENT.order.labels.plural) + ' | ' + money(o.total);
     $('#view-cart').textContent = (CONTENT.order.labels.viewCartButton || 'View cart') + ' (' + o.count + ')';
     $('#status').textContent = '';
-    $('#fallback').hidden = true;
     renderCart();
-    var wa = $('#wa');
-    if (SHOP.whatsapp && o.count) {
-      wa.href = 'https://wa.me/' + SHOP.whatsapp + '?text=' + encodeURIComponent(o.text);
-      wa.hidden = false;
-    } else {
-      wa.hidden = true;
-    }
   }
-
-  function copyOrder(status, box) {
-    var text = order().text;
-    try {
-      navigator.clipboard.writeText(text).then(function () {
-        box.hidden = true;
-        status.textContent = CONTENT.order.labels.copySuccess;
-      }, showFallback);
-    } catch (err) {
-      showFallback();
-    }
-    function showFallback() {
-      box.hidden = false;
-      box.value = text;
-      box.focus();
-      box.select();
-      status.textContent = CONTENT.order.labels.copyFallback;
-    }
-  }
-  $('#copy').addEventListener('click', function () { copyOrder($('#status'), $('#fallback')); });
-  $('#cart-copy').addEventListener('click', function () { copyOrder($('#cart-status'), $('#cart-fallback')); });
   $('#checkout-open').addEventListener('click', function () {
     $('#checkout-panel').hidden = false;
     $('#checkout-status').textContent = '';
-    $('#checkout-confirm').hidden = true;
+    $('#checkout-success').hidden = true;
     $('#checkout-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   });
   $('#checkout-back').addEventListener('click', function () {
     $('#checkout-panel').hidden = true;
     $('#checkout-status').textContent = '';
-    $('#checkout-confirm').hidden = true;
+    $('#checkout-success').hidden = true;
   });
   $('#checkout-fulfillment').addEventListener('change', function () {
     var pickup = this.value === 'pickup';
     $('#checkout-address-wrap').hidden = pickup;
     $('#checkout-address').required = !pickup;
   });
-  $('#checkout-panel').addEventListener('submit', function (event) {
+  $('#checkout-panel').addEventListener('submit', async function (event) {
     event.preventDefault();
-    var form = new FormData(this);
     var checkout = CONTENT.order.checkout || {};
-    if (!SHOP.whatsapp) {
-      $('#checkout-status').textContent = checkout.noWhatsappMessage || 'WhatsApp ordering is not set up yet. Please contact the store directly.';
+    if (!window.LEAFORA.configured || !window.LEAFORA.client) {
+      $('#checkout-status').textContent = 'Online ordering is temporarily unavailable. Please try again later.';
       return;
     }
+    var form = new FormData(this);
     var delivery = form.get('fulfillment') === 'delivery';
-    var details = [
-      '', 'Customer: ' + String(form.get('customerName') || '').trim(),
-      'Phone: ' + String(form.get('customerPhone') || '').trim(),
-      'Fulfillment: ' + (delivery ? (checkout.deliveryOption || 'Local delivery') : (checkout.pickupOption || 'Store pickup'))
-    ];
-    if (delivery) details.push('Address: ' + String(form.get('address') || '').trim());
-    var note = String(form.get('note') || '').trim();
-    if (note) details.push('Note: ' + note);
-    var phone = String(SHOP.whatsapp).replace(/\D/g, '');
-    $('#checkout-confirm').href = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(order().text + '\n' + details.join('\n'));
-    $('#checkout-status').textContent = checkout.readyMessage || 'Your order is ready. Review it in WhatsApp, then tap Send to place the order.';
-    $('#checkout-confirm').hidden = false;
+    var items = PRODUCTS.filter(function (p) { return (qty[p.id] || 0) > 0; }).map(function (p) {
+      return { product_id:p.id, quantity:qty[p.id] };
+    });
+    var submit = $('#checkout-submit');
+    submit.disabled = true;
+    $('#checkout-status').textContent = 'Placing your order…';
+    try {
+      var result = await window.LEAFORA.client.rpc('place_leafora_order', {
+        p_customer_name:String(form.get('customerName') || '').trim(),
+        p_customer_phone:String(form.get('customerPhone') || '').trim(),
+        p_fulfillment:delivery ? 'delivery' : 'pickup',
+        p_delivery_address:delivery ? String(form.get('address') || '').trim() : '',
+        p_note:String(form.get('note') || '').trim(),
+        p_items:items
+      });
+      if (result.error) throw result.error;
+      var saved = Array.isArray(result.data) ? result.data[0] : result.data;
+      if (!saved || !saved.order_id) throw new Error('The order was saved but no confirmation number was returned.');
+      var reference = String(saved.order_id);
+      qty = {};
+      updateBar();
+      $('#checkout-panel').hidden = true;
+      $('#cart-footer').hidden = true;
+      $('#cart-title').textContent = 'Order received';
+      $('#checkout-success').innerHTML = '<h4>Thank you for your order!</h4><p>Order <strong>#' + escapeHTML(reference) + '</strong> · ' + escapeHTML(money(Number(saved.order_total))) + '</p><p>' + escapeHTML(checkout.successMessage || 'Our Leafora team will contact you to confirm availability and delivery details.') + '</p>';
+      $('#checkout-success').hidden = false;
+    } catch (error) {
+      console.error('Leafora order submission failed.', error);
+      $('#checkout-status').textContent = checkout.errorMessage || 'We could not place your order. Please check your connection and try again.';
+    } finally {
+      submit.disabled = false;
+    }
   });
   $('#view-cart').addEventListener('click', function () {
     renderCart();
