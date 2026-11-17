@@ -22,11 +22,15 @@
     </section>
 
     <section class="editor" id="orders-panel" hidden>
-      <div class="editor-heading">
-        <div><p class="eyebrow">Customer orders</p><h1>Manage orders</h1><p class="muted">Only approved Leafora admins can view customer details.</p></div>
-        <div class="order-tools"><button class="button secondary" id="refresh-orders" type="button">Refresh</button><button class="button secondary" id="sign-out" type="button">Sign out</button></div>
+        <div class="editor-heading">
+        <div><p class="eyebrow">Customer orders</p><h1>Manage orders</h1><p class="muted">Only approved Leafora admins can view customer details. Keep this page open to receive new order alerts.</p></div>
+        <div class="order-tools"><button class="button secondary" id="enable-notifications" type="button">Turn on alerts</button><button class="button secondary" id="refresh-orders" type="button">Refresh</button><button class="button secondary" id="sign-out" type="button">Sign out</button></div>
       </div>
       <div class="notice" id="orders-notice" role="status" aria-live="polite">Loading orders…</div>
+      <div class="order-filters">
+        <label>Find an order or customer<input id="order-search" type="search" placeholder="Name, phone or order number" autocomplete="off"></label>
+        <label>Show<select id="order-status-filter"><option value="all">All orders</option><option value="pending">Pending</option><option value="confirmed">Confirmed</option><option value="preparing">Preparing</option><option value="ready">Ready</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select></label>
+      </div>
       <div class="order-list" id="order-list"></div>
     </section>
   </main>
